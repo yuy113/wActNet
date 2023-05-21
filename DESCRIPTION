@@ -1,0 +1,14 @@
+Package: wActNet
+Type: Package
+Title: Detection of active subnetwork in metabolic weighted network
+Version: 0.1.0
+Author: Yubing Yao and Raji Balasubramanian
+Maintainer: Yubing Yao <yubing.yao@gmail.com>
+Depends: R (>= 3.3.1)
+biocViews:
+Imports: BiocGenerics,igraph, BioNet, parallel, foreach, doParallel
+Description: Detect optimized subnetworks-potential function modules based on weighted sum of node scores and edge scores.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
