@@ -71,6 +71,33 @@ MultiModuleFind<-function(network,node.scores,edge.scores,weightratio.edge.node=
   #vid-the names of the vertices in the graph
   #eid-the names of the edges in the graph, with the format-Name(from_vertex)_Name(to_vertex)
   #output:the subgraph containing only the vertices of vid and the edges
+
+
+.subNetwork0 <- function(nodeList, network)
+{
+  if(is(network, "igraph"))
+  {
+    mapping <- seq(1, (length(V(network))))
+    if(is.null(V(network)$name))
+    {
+      V(network)$name <- as.character(V(network))
+    }
+    names(mapping) <- V(network)$name
+    nodeList = mapping[nodeList]
+    if(any(is.na(nodeList)))
+    {
+      nodeList = na.omit(nodeList)
+      warning("Not all nodes found in network")
+    }
+    subgr <- induced.subgraph(network, vids=nodeList) 
+  }
+  else
+  {
+    subgr <- subGraph(nodes(network)[nodes(network) %in% nodeList], network)
+  }
+  return(subgr)
+}
+
   subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
 
 
