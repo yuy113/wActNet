@@ -198,8 +198,8 @@ node.score<-function(da.igraph,pval,fdr){
 p<-length(pval)
 fdr1<-fdr
 #library(BioNet)
-fb.bm.node<-fitBumModel(pval,plot=F)
-scoreNodes(da.igraph,fb=fb.bm.node,fdr=fdr1)
+fb.bm.node<-BioNet::fitBumModel(pval,plot=F)
+BioNet::scoreNodes(da.igraph,fb=fb.bm.node,fdr=fdr1)
 
 }
 node.scores<-node.score(da.igraph,pval.node,fdr1)
