@@ -633,7 +633,7 @@ network.pos <- subnetwork.e(network,pos.nodes,pos.edges,remove.vertex=F )
 #The degree and newdegree of clusters is based on the subnetwork of interactome2 with edge score positive
 #to mimic the possible reality network with significant edge connections from multiple testing of pairwise correlations
 negnode.name<-V(interactome2)$name[!grepl("cluster",V(interactome2)$name)]
-  negnode.degree.inter<-igraph::degree(network.pos)[negnode.name]+1
+  negnode.degree.inter<-igraph::degree(network)[negnode.name]+1
   negnode.newdegree.inter<-max(negnode.degree.inter)-negnode.degree.inter+2
 
   edgelist.name.inter<-paste(get.edgelist(interactome2, TRUE)[,1],get.edgelist(interactome2, TRUE)[,2],sep="_")
