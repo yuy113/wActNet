@@ -163,8 +163,16 @@ MultiModuleFind<-function(network,node.scores,edge.scores,weightratio.edge.node=
       edge.score.sub<-edge.scores[eid]
 
     }
-    from.name.sub<-unlist(strsplit(E(graph)$name,"_"))[seq(1,2*length(E(graph)$name),by=2)]
-    to.name.sub<-unlist(strsplit(E(graph)$name,"_"))[seq(2,2*length(E(graph)$name),by=2)]
+
+
+    
+    names.edge.score.sub<-names(edge.score.sub)
+   
+    from.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(1,
+                                                              2 * length(names.edge.score.sub), by = 2)]
+    to.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(2,
+                                                            2 * length(names.edge.score.sub), by = 2)]
+    
     edge.name.sub<-as.matrix(cbind(from.name.sub,to.name.sub))
     if(dim( edge.name.sub)[1]>=1){
       edge.name.sub.node<-matrix(NA,nrow=dim(edge.name.sub)[1],ncol=dim(edge.name.sub)[2])
