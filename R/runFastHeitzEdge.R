@@ -603,8 +603,7 @@ E(interactome2)$weight <- rep(0, length(E(interactome2)))
 #This will leave only one member of each of the positively scoring clusters, with the cumulative score
 #for that cluster assigned to it, and the rest of the negatively scoring nodes
 #Beacuse all members of a cluster were assigned the same id and score, these all appeared as self loops
-interactome2 <- simplify(interactome2, remove.loops = TRUE,
-                           remove.multiple = TRUE, edge.attr.comb="max")
+interactome2 <- simplify(interactome2)
 edge.name.inter.pos<-paste(get.edgelist(interactome2,T)[,1],get.edgelist(interactome2,T)[,2],sep="_")[E(interactome2)$score>0]
 E(interactome2)$name<-paste(get.edgelist(interactome2,T)[,1],get.edgelist(interactome2,T)[,2],sep="_")
 
