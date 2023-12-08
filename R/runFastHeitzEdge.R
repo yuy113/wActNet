@@ -69,8 +69,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
       warning("Not all nodes found in network")
     }
     subgr <- induced.subgraph(network, vids=nodeList) 
-  }
-  else
+  }else
   {
     subgr <- subGraph(nodes(network)[nodes(network) %in% nodeList], network)
   }
@@ -159,8 +158,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
       for(i in 1:dim( edge.name.sub)[1]){
         if(length(intersect(vid,edge.name.sub[i,]))==2){
           edge.name.sub.node[i,] <-edge.name.sub[i,]
-        }
-        else
+        }else
           edge.name.sub.node[i,] <-c(NA,NA)
 
       }
@@ -178,8 +176,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
           for(i in 1:dim( edge.name.sub.node)[1]){
             if(length(intersect(vid,edge.name.sub.node[i,]))==2){
               edge.name.sub.node2[i,] <-edge.name.sub[i,]
-            }
-            else
+            }else
               edge.name.sub.node2[i,] <-c(NA,NA)
 
           }
@@ -300,8 +297,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
       {
         edge.score.mst <- c( edge.score.mst, sum(edge.score.clusters.mst,node.score[V(graph1)[path[i]]$name]))
       }
-      }
-      else {
+      }else {
 
         if(grepl("cluster",V(graph1)[path[i]]$name) && (length(intersect(V(graph1)[path[i]]$name,V(graph2)[unique(unlist(V(graph1)[path]$clusters))]$name))==0)){
 
@@ -902,8 +898,7 @@ if(length(neg.node.ids)!=0){
 score.neg.nodes <- c(score.neg.nodes, sum(node.score[V(sub.interactome2)[c(i,
                                                                               V(sub.interactome2)[i]$clusters[[1]])]$name],
                                                   edge.score.negnodes))
-      }
-      else {
+      }else {
         score.neg.nodes <- c(score.neg.nodes, node.score[V(sub.interactome2)[i]$name])
       }
     }
@@ -934,8 +929,7 @@ for (i in cluster.id) {
                                             cluster.score[as.numeric(unlist(strsplit(V(sub.interactome2)[i]$clusters[[1]]$name,
                                                                                      "cluster"))[seq(2,2*length(V(sub.interactome2)[i]$clusters[[1]]),by=2)])],
                                             edge.score.clusters.conn))
-  }
-  else {
+  }else {
     score.clusters.conn  <- c(score.clusters.conn , NA)
   }
 }
