@@ -195,10 +195,27 @@ da.igraph<-induced.graph.data.frame(dat,node.score=NULL,edge.score=edge.scores,n
 #and the name of the vector must equal to names of nodes in the network
 #adjusted node score based on p-values
 node.score<-function(da.igraph,pval,fdr){
+
+fitBumModel<-function(x, plot = TRUE, starts = 10) 
+{
+  if (is.null(names(x))) {
+    warning("Please name the p-values with the gene names!")
+    names(x) = as.character(1:length(x))
+  }
+  fit <- bumOptim(x = x, starts)
+  if (plot) {
+    par(mfrow = c(1, 2))
+    hist(x = fit)
+    plot(fit)
+  }
+  return(fit)
+}
+
+  
 p<-length(pval)
 fdr1<-fdr
 #library(BioNet)
-fb.bm.node<-BioNet::fitBumModel(pval,plot=F)
+fb.bm.node<-fitBumModel(pval,plot=F)
 BioNet::scoreNodes(da.igraph,fb=fb.bm.node,fdr=fdr1)
 
 }
