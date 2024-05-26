@@ -516,6 +516,26 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     }
     return(module)
  }
+   if (length(edge.scores)==0){
+   warning("No edges with positive scores")
+   if (max(node.scores) <= 0){
+     
+     warning("No nodes with positive scores")
+     break
+   }
+   
+   if (max(node.scores) > 0){
+     
+     nodes.module.name<-names(node.scores[which(node.scores==max(node.scores))])
+     
+     module <- .subNetwork0(nodes.module.name, network)
+     if (net.flag) {
+       module <- igraph.to.graphNEL(module)
+     }
+     return(module)
+   }
+    
+ }
   
   
   #find positive scoring nodes with the positive edges connecting them
