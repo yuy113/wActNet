@@ -996,14 +996,30 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   #score is positive, then grab the highest scoring cluster and assign it to object 'module'
   #need to check the combined neighboring negative nodes and the connecting edge scores
   if (length(neg.node.ids.2) == 0) {
-    cluster.max.nodes<-unlist(lapply(conn.comp.graph, vertex_attr,
-                                     
-                                     "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[which.max(cluster.score)],
-                                                                               "cluster")), nrow = 2)[2, ])])
-    #the term in the square brackets is a very complicated way of getting the number of the cluster with
-    #the highest score
-    V(mst)$score<-v.score[V(mst)$name]
-    max.cluster<-names(cluster.score)[which.max(cluster.score)]
+     
+   # cluster.max.nodes <- unlist(lapply(conn.comp.graph, vertex_attr, 
+    #                                   "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[which.max(cluster.score)], 
+    #                                                                             "cluster")), nrow = 2)[2, ])])
+   # V(mst)$score <- v.score[V(mst)$name]
+   # max.cluster <- names(cluster.score)[which.max(cluster.score)]
+    #neighbor.score <- neighbor.combined.scores(mst, max.cluster)
+    
+    
+    
+    V(mst)$score <- v.score[V(mst)$name]
+    
+    cluster.max.score.mst<- max(V(mst)$score[grepl("cluster",V(mst)$name)])
+    
+    cluster.name.max.mst<-V(mst)$name[v.score[V(mst)$name]==cluster.max.score.mst]
+    
+    cluster.max.nodes <- unlist(lapply(conn.comp.graph, vertex_attr, 
+                                       "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[cluster.score==cluster.max.score.mst], "cluster")), nrow = 2)[2, ])])
+    
+    #  max.cluster <- names(cluster.score)[which.max(cluster.score)]
+    neighbor.score <- neighbor.combined.scores(mst, cluster.name.max.mst)
+    
+
+    
     #under some special situation, clusters with minimum spanning tree might not the same as the cluster with highest cluster score
     if (names(mst.cluster.id)!=max.cluster){
       neighbor.score<-neighbor.combined.scores(network,cluster.max.nodes)
