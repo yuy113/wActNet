@@ -278,7 +278,204 @@ MultiModuleFind<-function(network,node.scores,edge.scores,weightratio.edge.node=
 
 
     g <- graph_from_data_frame(edge.pos.nodes.dat, directed=F, vertices=pos.nodes.dat)
-    return(g)}
+    return(g)}subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
+  
+  
+  if(is.null(vid) || all(is.na(vid))){
+    warning("No nodes for subnetwork")
+    break
+  }
+  
+  if(is.null(E(graph)$name) || all(is.na(E(graph)$name)) ){
+    warning("No edge names in the network")
+    E(graph)$name<-names(edge.scores)
+    
+    names(E(graph)$score)
+  }
+  
+  
+  if(!(is.null(V(graph)$score)  || all(is.na(E(graph)$name)))        ){
+    node.scores<-V(graph)$score
+    
+    
+    names(node.scores)<-V(graph)$name
+    node.score.sub<-node.scores[vid]
+    
+  }
+  if(!(is.null(V(graph)$weight)  || all(is.na(V(graph)$weight)))         ){
+    node.weight<-V(graph)$weight
+    
+    names(node.weight)<-V(graph)$name
+    node.weight.sub<-node.weight[vid]
+    
+  }
+  
+  
+  
+  
+  
+  if(! (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))    ){
+    edge.weight<-E(graph)$weight
+    names(edge.weight)<-E(graph)$name
+    
+  }
+  
+
+  
+  
+  
+  if(is.null(eid)  || all(is.na(eid))  ){
+    warning("No edges for subnetwork")
+    g<-make_empty_graph(length(vid),directed=F)
+   V(g)$name<-vid
+    
+  
+    
+    if(  (is.null(V(graph)$score) | all(is.na(V(graph)$score)))  && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ){
+      
+      
+      V(g)$weight= node.weight.sub
+      
+      
+      }
+    
+    if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && (is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
+      
+      
+      V(g)$score= node.score.sub
+      
+      }
+    
+   if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
+     
+     V(g)$weight= node.weight.sub
+     V(g)$score= node.score.sub
+     
+   }
+   
+   
+   # g <- graph_from_data_frame(eid, directed=F, vertices=pos.nodes.dat)
+    return(g)
+    break
+  }
+  
+  if( any(is.na(eid)) ){
+    eid<-as.vector(na.omit(eid))
+    
+  }
+  
+  
+  if(!is.null(E(graph)$score)){
+    edge.scores<-E(graph)$score
+    names(edge.scores)<-E(graph)$name
+    edge.score.sub<-edge.scores[eid]
+    
+  }
+  
+  names.edge.score.sub<-names(edge.score.sub)
+  
+  from.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(1,
+                                                                   2 * length(names.edge.score.sub), by = 2)]
+  to.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(2,
+                                                                 2 * length(names.edge.score.sub), by = 2)]
+  edge.name.sub<-as.matrix(cbind(from.name.sub,to.name.sub))
+  if(dim( edge.name.sub)[1]>=1){
+    edge.name.sub.node<-matrix(NA,nrow=dim(edge.name.sub)[1],ncol=dim(edge.name.sub)[2])
+    
+    
+    
+    for(i in 1:dim( edge.name.sub)[1]){
+      if(length(intersect(vid,edge.name.sub[i,]))==2){
+        edge.name.sub.node[i,] <-edge.name.sub[i,]
+      }
+      else
+        edge.name.sub.node[i,] <-c(NA,NA)
+      
+    }
+    edge.name.sub.node<-na.omit(edge.name.sub.node)
+    from.name.edge.sub.nodes<-edge.name.sub.node[,1]
+    to.name.edge.sub.nodes<-edge.name.sub.node[,2]
+  }
+  
+  if( remove.vertex){
+    if(length(unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes)))<length(unique(vid))){
+      vid<-unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes))
+      if ( dim(edge.name.sub.node)[1] >= 1){
+        edge.name.sub.node2<-matrix(NA,nrow=dim(edge.name.sub.node)[1],ncol=dim(edge.name.sub.node)[2])
+        
+        for(i in 1:dim( edge.name.sub.node)[1]){
+          if(length(intersect(vid,edge.name.sub.node[i,]))==2){
+            edge.name.sub.node2[i,] <-edge.name.sub[i,]
+          }
+          else
+            edge.name.sub.node2[i,] <-c(NA,NA)
+          
+        }
+        edge.name.sub.node2<-na.omit(edge.name.sub.node2)
+        from.name.edge.sub.nodes<-edge.name.sub.node2[,1]
+        to.name.edge.sub.nodes<-edge.name.sub.node2[,2]
+      }
+    }
+  }
+  
+  
+  
+  #  remove.vertex=F
+  
+  
+  
+  ################################################################################
+  ##in case remove.vertex=T, remove some nodes from input parameter-vid#########
+  ###############################################################################
+  node.score.sub<-node.score.sub[vid]
+  if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
+    node.weight.sub<-node.weight[vid]
+  }
+  names.edge.sub.nodes<-paste( from.name.edge.sub.nodes,to.name.edge.sub.nodes,sep="_")
+  
+  if(! (is.null(E(graph)$score) || all(is.na(E(graph)$score)))            ){
+    edge.score.sub.nodes<-edge.scores[names.edge.sub.nodes]
+  }
+  
+  
+  if(!(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))         ){
+    edge.weight.sub.nodes<-edge.weight[names.edge.sub.nodes]}
+  
+  
+  if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) &&  (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+    pos.nodes.dat<-data.frame(name=vid)}
+  
+  if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+    pos.nodes.dat<-data.frame(name=vid,weight= node.weight.sub)}
+  
+  if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+    pos.nodes.dat<-data.frame(name=vid,score= node.score.sub)}
+  
+  if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+    pos.nodes.dat<-data.frame(name=vid,score= node.score.sub,weight=node.weight.sub)}
+  
+  if(   !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                   score=edge.score.sub.nodes,name= names.edge.sub.nodes,weight=edge.weight.sub.nodes)}
+  
+  if(  !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                   score=edge.score.sub.nodes,name= names.edge.sub.nodes)}
+  
+  
+  if(  (is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                   name= names.edge.sub.nodes)}
+  
+  
+  if((is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                   weight=edge.weight.sub.nodes,name= names.edge.sub.nodes)}
+  
+  
+  
+  g <- graph_from_data_frame(edge.pos.nodes.dat, directed=F, vertices=pos.nodes.dat)
+  return(g)}
 
 
 
