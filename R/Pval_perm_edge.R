@@ -28,7 +28,9 @@
 #'
 #'
 pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
-  if(do.parallel==T && is.null(no_cores)){
+  
+  
+  if(do.parallel==T && (is.null(no_cores) | all(is.na(no_cores))) ){
     warnings("Please specify the number of cores")
     break
   }
@@ -108,6 +110,8 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
   #output:the vector of p-values based on permuation resampling samples with size-p1*p2
   #where p1-the number of variables(columns) in dat1;p2-the number of variables(columns) in dat2;
   pval.perm.corr.cross<-function(dat1,dat2,nsim,MatchId=NULL){
+    
+    
     n<-nrow(dat1)
     if(any(is.na(colnames(dat1)))){
       warning("Names of variables in data 1 contain missing values")
@@ -207,15 +211,116 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
     names(p.val.perm)<-paste(from,to,sep="_")
     return(p.val.perm)
   }
-  ############################################################################
+  
+  
+pval.perm.corr.cross.p<-function(dat1,dat2,nsim,MatchId=NULL){
+  
+  library(foreach)
+  n<-nrow(dat1)
+  if(any(is.na(colnames(dat1)))){
+    warning("Names of variables in data 1 contain missing values")
+  }
+  if(is.null(colnames(dat1))){
+    warning("Names of variables in data 1 are missing, please specify")
+  }
+  if(!is.null(colnames(dat1))){
+    if(any(is.na(colnames(dat2)))){
+      warning("Names of variables in data 2 contain missing values")
+    }}
+  if(is.null(colnames(dat2))){
+    warning("Names of variables in data 2 are missing, please specify")
+  }
+  
+  if(!is.null(MatchId)){
+    if( any(is.na(MatchId)))
+    {warning("NA in paired group id")
+      break}
+    if(!any(is.na(MatchId))){
+      size.b<-length(unique(MatchId))
+    }}
+  #the number of variables for correlatins
+  p1<-dim(dat1)[2]
+  p2<-dim(dat2)[2]
+  #the number of correlations from p variables
+  pp<-p1*p2
+  mat.corr.perm<-matrix(NA,ncol=pp,nrow=nsim)
+  dat<-cbind(dat1,dat2)
+ 
+  mat.corr.perm<-foreach(i=1:nsim,.combine='rbind',.export="permut_cross_corr") %do% permut_cross_corr(dat1,dat2,MatchId=MatchId)
+  
+  #Pearson's correlation from real data
+  corr.true<-as.vector(cor(dat1,dat2, use="complete.obs"))
+  #calculate the P-values from the permutation samples with the assumptions of indepedent variables in dataset-dat
+  p.val.perm<-sapply(1:ncol(mat.corr.perm),function(x){(sum(abs(mat.corr.perm[,x])>=abs(corr.true[x]))+1)/(nsim+1)})
+  from<-rep(colnames(dat1),ncol(dat2))
+  to<-rep(colnames(dat2),each=ncol(dat1))
+  names(p.val.perm)<-paste(from,to,sep="_")
+  p.val.perm
+}
+
+pval.perm.corr.submat.p<-function(dat,nsim,MatchId=NULL){
+  library(foreach)
+  n<-dim(dat)[1]
+  #the number of variales for correlatins
+  p<-dim(dat)[2]
+  if(is.null(colnames(dat))){
+    warning("colnames of variables in the data are missing, please specify")
+    break
+  }
+  if(any(is.na(colnames(dat)))){
+    warning("Names of variables in the data contain missing values")
+    break
+  }
+  
+  if(!is.null(MatchId)){
+    if( any(is.na(MatchId)))
+    {warning("NA in paired group id")
+      break}
+    if(!any(is.na(MatchId))){
+      size.b<-length(unique(MatchId))
+    }}
+  #the number of correlations from p variables
+  #p must be greater than 1
+  pp<-p*(p-1)/2
+  
+  mat.corr.perm<-matrix(NA,ncol=pp,nrow=nsim)
+  
+  
+  mat.corr.perm<-foreach(i=1:nsim,.combine='rbind',.export="permut_within_corr") %do% permut_within_corr(dat,MatchId=MatchId)
+  
+  
+  #Pearson's correlation from real data
+  corr.true<-cor(dat, use="complete.obs")[lower.tri(cor(dat, use="complete.obs"), diag = FALSE)]
+  #calculate the P-values from the permutation samples with the assumptions of indepedent variables in dataset-dat
+  p.val.perm<-sapply(1:ncol(mat.corr.perm),function(x){(sum(abs(mat.corr.perm[,x])>=abs(corr.true[x]))+1)/(nsim+1)})
+  
+  from<-c()
+  to<-c()
+  for (i in 1:(dim(dat)[2]-1)){
+    from<-c(from,rep(colnames(dat)[i],length((i+1):dim(dat)[2])))
+    to<-c(to,colnames(dat)[-c(1:i)])}
+  names(p.val.perm)<-paste(from,to,sep="_")
+  return(p.val.perm)
+}
+
+
+  
+###############################################################################
 
   if(n.submat==1){
     return(pval.perm.corr.submat(dat,nsim,MatchId))}
   if(n.submat>1){
 
     if(!do.parallel){
+      
+      
       pval.perm.corr.sub<-as.vector(sapply(1:n.submat,function(i){pval.perm.corr.submat(dat[,c(((i-1)*20+1):min(p,20*i))],nsim,MatchId)}))
+      
+      
       pval.perm.corr.cross2<-unlist(sapply(1:(n.submat-1),function(i){sapply((i+1):n.submat,function(j){pval.perm.corr.cross(dat[,c(((i-1)*20+1):min(p,20*i))],dat[,c(((j-1)*20+1):min(p,20*j))],nsim,MatchId)})}))
+      
+      
+      
     }
 
     if(do.parallel){
@@ -227,12 +332,19 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
       cl<-makeCluster(no_cores)
       registerDoParallel(cl)
 
-      pval.perm.corr.sub<-foreach( i = 1:n.submat,.combine=c,multicombine=TRUE,.export=c("pval.perm.corr.submat","permut_within_corr"))%dopar%
-        pval.perm.corr.submat(dat[,c(((i-1)*20+1):min(p,20*i))],nsim,MatchId)
-
-
-      pval.perm.corr.cross2<-foreach(i = 1:(n.submat-1),.combine=c,multicombine=TRUE,.export="pval.perm.corr.cross")%:%foreach(j=(i+1):n.submat,.combine=c,multicombine=TRUE,.export=c("pval.perm.corr.cross","permut_cross_corr"))%dopar%
-        pval.perm.corr.cross(dat[,c(((i-1)*20+1):min(p,20*i))],dat[,c(((j-1)*20+1):min(p,20*j))],nsim,MatchId)
+pval.perm.corr.sub<-foreach( i = 1:n.submat,.combine='c')%dopar%
+        pval.perm.corr.submat.p(dat[,c(((i-1)*20+1):min(p,20*i))],nsim,MatchId)
+      
+      
+      
+     # length(pval.perm.corr.sub)
+      
+      
+      pval.perm.corr.cross2<-foreach(i=1:(n.submat-1),.combine='c')%:%foreach(j=(i+1):n.submat,.combine='c')%dopar%pval.perm.corr.cross.p(dat[,c(((i-1)*20+1):min(p,20*i))],dat[,c(((j-1)*20+1):min(p,20*j))],nsim,MatchId)
+      
+      
+    #  length(pval.perm.corr.cross2)
+      
 
       stopCluster(cl)
 
@@ -240,5 +352,7 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
   }
   c(pval.perm.corr.sub,pval.perm.corr.cross2)
 }
+
+
 ###########################################################################################################################################################################################################################
 
