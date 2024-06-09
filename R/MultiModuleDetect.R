@@ -300,21 +300,27 @@ subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
 }
 
 
-
-
-  if(is.null(E(network)$name)){
-    E(network)$name<-names(edge.scores)}
-  if (method=="NodeOnly"){
-    module.1<-runFastHeinz(network,node.scores)
-
+ num.cluster <- 1
+  lst.modules <- list()
+  
+  
+  if (is.null(E(network)$name)) {
+    E(network)$name <- names(edge.scores)
   }
-  if (method=="NodeEdge"){
-    module.1<-runFastHeinz.e(network,node.scores,edge.scores,weightratio.edge.node=weightratio.edge.node)
-
+  if (method == "NodeOnly") {
+    module.1 <- runFastHeinz(network, node.scores)
   }
-  num.cluster<-1
+  if (method == "NodeEdge") {
+    module.1 <- runFastHeinz.e(network, node.scores, edge.scores, 
+                               weightratio.edge.node = weightratio.edge.node)
+  }
+  
+ # names(node.scores)
+#  E(network)$name
+  
+  lst.modules[[1]]<-module.1
 
-  lst.modules<-list()
+  
   while( !(is.null(V(module.1)$name))  && num.cluster<ncluster ){
     lst.modules[[num.cluster]]<-module.1
 
