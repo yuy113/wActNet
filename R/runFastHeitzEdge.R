@@ -78,204 +78,209 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   }
   
   
+  
   subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
-  
-  
-  if(is.null(vid) || all(is.na(vid))){
-    warning("No nodes for subnetwork")
-    break
-  }
-  
-  if(is.null(E(graph)$name) || all(is.na(E(graph)$name)) ){
-    warning("No edge names in the network")
-    E(graph)$name<-names(edge.scores)
-    
-    names(E(graph)$score)
-  }
-  
-  
-  if(!(is.null(V(graph)$score)  || all(is.na(E(graph)$name)))        ){
-    node.scores<-V(graph)$score
     
     
-    names(node.scores)<-V(graph)$name
-    node.score.sub<-node.scores[vid]
+    if(is.null(vid) || all(is.na(vid))){
+      warning("No nodes for subnetwork")
+      break
+    }
     
-  }
-  if(!(is.null(V(graph)$weight)  || all(is.na(V(graph)$weight)))         ){
-    node.weight<-V(graph)$weight
+    if(is.null(E(graph)$name) || all(is.na(E(graph)$name)) ){
+      warning("No edge names in the network")
+      E(graph)$name<-names(edge.scores)
+      
+      names(E(graph)$score)
+    }
     
-    names(node.weight)<-V(graph)$name
-    node.weight.sub<-node.weight[vid]
     
-  }
-  
-  
-  
-  
-  
-  if(! (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))    ){
-    edge.weight<-E(graph)$weight
-    names(edge.weight)<-E(graph)$name
-    
-  }
-  
-
-  
-  
-  
-  if(is.null(eid)  || all(is.na(eid))  ){
-    warning("No edges for subnetwork")
-    g<-make_empty_graph(length(vid),directed=F)
-   V(g)$name<-vid
-    
-  
-    
-    if(  (is.null(V(graph)$score) | all(is.na(V(graph)$score)))  && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ){
+    if(!(is.null(V(graph)$score)  || all(is.na(E(graph)$name)))        ){
+      node.scores<-V(graph)$score
       
       
-      V(g)$weight= node.weight.sub
-      
-      
-      }
-    
-    if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && (is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
-      
-      
-      V(g)$score= node.score.sub
-      
-      }
-    
-   if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
-     
-     V(g)$weight= node.weight.sub
-     V(g)$score= node.score.sub
-     
-   }
-   
-   
-   # g <- graph_from_data_frame(eid, directed=F, vertices=pos.nodes.dat)
-    return(g)
-    break
-  }
-  
-  if( any(is.na(eid)) ){
-    eid<-as.vector(na.omit(eid))
-    
-  }
-  
-  
-  if(!is.null(E(graph)$score)){
-    edge.scores<-E(graph)$score
-    names(edge.scores)<-E(graph)$name
-    edge.score.sub<-edge.scores[eid]
-    
-  }
-  
-  names.edge.score.sub<-names(edge.score.sub)
-  
-  from.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(1,
-                                                                   2 * length(names.edge.score.sub), by = 2)]
-  to.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(2,
-                                                                 2 * length(names.edge.score.sub), by = 2)]
-  edge.name.sub<-as.matrix(cbind(from.name.sub,to.name.sub))
-  if(dim( edge.name.sub)[1]>=1){
-    edge.name.sub.node<-matrix(NA,nrow=dim(edge.name.sub)[1],ncol=dim(edge.name.sub)[2])
-    
-    
-    
-    for(i in 1:dim( edge.name.sub)[1]){
-      if(length(intersect(vid,edge.name.sub[i,]))==2){
-        edge.name.sub.node[i,] <-edge.name.sub[i,]
-      }
-      else
-        edge.name.sub.node[i,] <-c(NA,NA)
+      names(node.scores)<-V(graph)$name
+      node.score.sub<-node.scores[vid]
       
     }
-    edge.name.sub.node<-na.omit(edge.name.sub.node)
-    from.name.edge.sub.nodes<-edge.name.sub.node[,1]
-    to.name.edge.sub.nodes<-edge.name.sub.node[,2]
-  }
-  
-  if( remove.vertex){
-    if(length(unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes)))<length(unique(vid))){
-      vid<-unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes))
-      if ( dim(edge.name.sub.node)[1] >= 1){
-        edge.name.sub.node2<-matrix(NA,nrow=dim(edge.name.sub.node)[1],ncol=dim(edge.name.sub.node)[2])
+    if(!(is.null(V(graph)$weight)  || all(is.na(V(graph)$weight)))         ){
+      node.weight<-V(graph)$weight
+      
+      names(node.weight)<-V(graph)$name
+      node.weight.sub<-node.weight[vid]
+      
+    }
+    
+    
+    
+    
+    
+    if(! (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))    ){
+      edge.weight<-E(graph)$weight
+      names(edge.weight)<-E(graph)$name
+      
+    }
+    
+    
+    
+    
+    
+    if(is.null(eid)  || all(is.na(eid))  ){
+      warning("No edges for subnetwork")
+      g<-make_empty_graph(length(vid),directed=F)
+      V(g)$name<-vid
+      
+      
+      
+      if(  (is.null(V(graph)$score) | all(is.na(V(graph)$score)))  && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ){
         
-        for(i in 1:dim( edge.name.sub.node)[1]){
-          if(length(intersect(vid,edge.name.sub.node[i,]))==2){
-            edge.name.sub.node2[i,] <-edge.name.sub[i,]
-          }
-          else
-            edge.name.sub.node2[i,] <-c(NA,NA)
-          
+        
+        V(g)$weight= node.weight.sub
+        
+        
+      }
+      
+      if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && (is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
+        
+        
+        V(g)$score= node.score.sub
+        
+      }
+      
+      if(!(is.null(V(graph)$score) | all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight)| all(is.na(V(graph)$weight))) ) {
+        
+        V(g)$weight= node.weight.sub
+        V(g)$score= node.score.sub
+        
+      }
+      
+      
+      # g <- graph_from_data_frame(eid, directed=F, vertices=pos.nodes.dat)
+      return(g)
+      break
+    }
+    
+    if( any(is.na(eid)) ){
+      eid<-as.vector(na.omit(eid))
+      
+    }
+    
+    
+    if(!is.null(E(graph)$score)){
+      edge.scores<-E(graph)$score
+      names(edge.scores)<-E(graph)$name
+      edge.score.sub<-edge.scores[eid]
+      
+    }
+    
+    names.edge.score.sub<-names(edge.score.sub)
+    
+    from.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(1,
+                                                                     2 * length(names.edge.score.sub), by = 2)]
+    to.name.sub <- unlist(strsplit(names.edge.score.sub, "_"))[seq(2,
+                                                                   2 * length(names.edge.score.sub), by = 2)]
+    edge.name.sub<-as.matrix(cbind(from.name.sub,to.name.sub))
+    if(dim( edge.name.sub)[1]>=1){
+      edge.name.sub.node<-matrix(NA,nrow=dim(edge.name.sub)[1],ncol=dim(edge.name.sub)[2])
+      
+      
+      
+      for(i in 1:dim( edge.name.sub)[1]){
+        if(length(intersect(vid,edge.name.sub[i,]))==2){
+          edge.name.sub.node[i,] <-edge.name.sub[i,]
         }
-        edge.name.sub.node2<-na.omit(edge.name.sub.node2)
-        from.name.edge.sub.nodes<-edge.name.sub.node2[,1]
-        to.name.edge.sub.nodes<-edge.name.sub.node2[,2]
+        else
+          edge.name.sub.node[i,] <-c(NA,NA)
+        
+      }
+      edge.name.sub.node<-matrix(na.omit(edge.name.sub.node),ncol=2)
+      from.name.edge.sub.nodes<-edge.name.sub.node[,1]
+      to.name.edge.sub.nodes<-edge.name.sub.node[,2]
+    }
+    
+    if( remove.vertex){
+      if(length(unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes)))<length(unique(vid))){
+        vid<-unique(c( from.name.edge.sub.nodes, to.name.edge.sub.nodes))
+        if ( dim(edge.name.sub.node)[1] >= 1){
+          edge.name.sub.node2<-matrix(NA,nrow=dim(edge.name.sub.node)[1],ncol=dim(edge.name.sub.node)[2])
+          
+          i=1
+          for(i in 1:dim( edge.name.sub.node)[1]){
+            if(length(intersect(vid,edge.name.sub.node[i,]))==2){
+              edge.name.sub.node2[i,] <-edge.name.sub.node[i,]
+            }
+            else
+              edge.name.sub.node2[i,] <-c(NA,NA)
+            
+          }
+          edge.name.sub.node2<-matrix(na.omit(edge.name.sub.node2),ncol=2)
+          from.name.edge.sub.nodes<-edge.name.sub.node2[,1]
+          to.name.edge.sub.nodes<-edge.name.sub.node2[,2]
+        }
       }
     }
-  }
+    
+    
+    
+    #  remove.vertex=F
+    
+    
+    
+    ################################################################################
+    ##in case remove.vertex=T, remove some nodes from input parameter-vid#########
+    ###############################################################################
+    node.score.sub<-node.score.sub[vid]
+    if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
+      node.weight.sub<-node.weight[vid]
+    }
+    names.edge.sub.nodes<-paste( from.name.edge.sub.nodes,to.name.edge.sub.nodes,sep="_")
+    
+    if(! (is.null(E(graph)$score) || all(is.na(E(graph)$score)))            ){
+      edge.score.sub.nodes<-edge.scores[names.edge.sub.nodes]
+    }
+    
+    
+    if(!(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))         ){
+      edge.weight.sub.nodes<-edge.weight[names.edge.sub.nodes]}
+    
+    
+    if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) &&  (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+      pos.nodes.dat<-data.frame(name=vid)}
+    
+    if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+      pos.nodes.dat<-data.frame(name=vid,weight= node.weight.sub)}
+    
+    if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+      pos.nodes.dat<-data.frame(name=vid,score= node.score.sub)}
+    
+    if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
+      pos.nodes.dat<-data.frame(name=vid,score= node.score.sub,weight=node.weight.sub)}
+    
+    if(   !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+      edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                     score=edge.score.sub.nodes,name= names.edge.sub.nodes,weight=edge.weight.sub.nodes)}
+    
+    if(  !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+      edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                     score=edge.score.sub.nodes,name= names.edge.sub.nodes)}
+    
+    
+    if(  (is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+      edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                     name= names.edge.sub.nodes)}
+    
+    
+    if((is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
+      edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
+                                     weight=edge.weight.sub.nodes,name= names.edge.sub.nodes)}
+    
+    
+    
+    g <- graph_from_data_frame(edge.pos.nodes.dat, directed=F, vertices=pos.nodes.dat)
+    return(g)}
   
   
   
-  #  remove.vertex=F
-  
-  
-  
-  ################################################################################
-  ##in case remove.vertex=T, remove some nodes from input parameter-vid#########
-  ###############################################################################
-  node.score.sub<-node.score.sub[vid]
-  if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
-    node.weight.sub<-node.weight[vid]
-  }
-  names.edge.sub.nodes<-paste( from.name.edge.sub.nodes,to.name.edge.sub.nodes,sep="_")
-  
-  if(! (is.null(E(graph)$score) || all(is.na(E(graph)$score)))            ){
-    edge.score.sub.nodes<-edge.scores[names.edge.sub.nodes]
-  }
-  
-  
-  if(!(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))         ){
-    edge.weight.sub.nodes<-edge.weight[names.edge.sub.nodes]}
-  
-  
-  if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) &&  (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
-    pos.nodes.dat<-data.frame(name=vid)}
-  
-  if(  (is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
-    pos.nodes.dat<-data.frame(name=vid,weight= node.weight.sub)}
-  
-  if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && (is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
-    pos.nodes.dat<-data.frame(name=vid,score= node.score.sub)}
-  
-  if(  !(is.null(V(graph)$score) || all(is.na(V(graph)$score))) && !(is.null(V(graph)$weight) || all(is.na(V(graph)$weight))) ){
-    pos.nodes.dat<-data.frame(name=vid,score= node.score.sub,weight=node.weight.sub)}
-  
-  if(   !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
-    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
-                                   score=edge.score.sub.nodes,name= names.edge.sub.nodes,weight=edge.weight.sub.nodes)}
-  
-  if(  !(is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
-    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
-                                   score=edge.score.sub.nodes,name= names.edge.sub.nodes)}
-  
-  
-  if(  (is.null(E(graph)$score) || all(is.na(E(graph)$score))) && (is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
-    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
-                                   name= names.edge.sub.nodes)}
-  
-  
-  if((is.null(E(graph)$score) || all(is.na(E(graph)$score))) && !(is.null(E(graph)$weight) || all(is.na(E(graph)$weight)))  ){
-    edge.pos.nodes.dat<-data.frame(from= from.name.edge.sub.nodes,to=to.name.edge.sub.nodes,
-                                   weight=edge.weight.sub.nodes,name= names.edge.sub.nodes)}
-  
-  
-  
-  g <- graph_from_data_frame(edge.pos.nodes.dat, directed=F, vertices=pos.nodes.dat)
-  return(g)}
   
   ################################################################################################################################
   #sum the scores of the negative nodes and the adjacent positive clusters and their connectng edge scores
@@ -350,7 +355,14 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   #v.name, the name of the particular vertex from the network
   #output:the vector containing the combined scores of the node scores of v's neighboring vertices
   # and the edge scores of v and its neighbouring vertices in the network
+  
+  
+  
   neighbor.combined.scores<-function(network,v.name){
+    
+    #    neighbor.score<-neighbor.combined.scores(mst,max.cluster)
+
+    
     # library(igraph)
     if (is.null(V(network)$name)) {
       warning("Unnamed nodes in the network")
@@ -415,6 +427,30 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     E(network)$name <- names(edge.scores)
   }
   
+  #net.flag<-F
+ # edge.scores<-edge.scores2
+  
+ if (length(edge.scores)==0){
+   warning("No edges with positive scores")
+   if (max(node.scores) <= 0){
+     
+     warning("No nodes with positive scores")
+     break
+   }
+   
+   if (max(node.scores) > 0){
+     
+     nodes.module.name<-names(node.scores[which(node.scores==max(node.scores))])
+     
+     module <- .subNetwork0(nodes.module.name, network)
+     if (net.flag) {
+       module <- igraph.to.graphNEL(module)
+     }
+     return(module)
+   }
+    
+ }
+  
   
   network<-subnetwork.e(network,vid=names(node.scores),eid=names(edge.scores),remove.vertex=F)
   
@@ -422,6 +458,9 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   V(network)$score <- node.scores[V(network)$name]
   E(network)$name<-names(edge.scores)
   E(network)$score<-weightratio.edge.node*edge.scores
+  length(E(network)$name)
+  length(names(edge.scores))
+  
   
   #the edges with edge scores>0
   
@@ -437,7 +476,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     module <- graph.empty(n = 0, directed = FALSE)
     if (net.flag) {
       nE <- ecount(module)
-      module <- simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
+      module <- igraph::simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
       if (nE != ecount(module)) {
         warning("Multiple edges between two nodes had to be removed for calculation")
       }
@@ -478,7 +517,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     
     if (net.flag) {
       nE <- ecount(module)
-      module <- simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
+      module <- igraph::simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
       if (nE != ecount(module)) {
         warning("Multiple edges between two nodes had to be removed for calculation")
       }
@@ -511,7 +550,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     
     if (net.flag) {
       nE <- ecount(module)
-      module <- simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
+      module <- igraph::simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
       if (nE != ecount(module)) {
         warning("Multiple edges between two nodes had to be removed for calculation")
       }
@@ -527,7 +566,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     module <-subnetwork.e(network,vid=node.max.score,eid=E(network)$name,remove.vertex = F )
     if (net.flag) {
       nE <- ecount(module)
-      module <- simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
+      module <- igraph::simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
       if (nE != ecount(module)) {
         warning("Multiple edges between two nodes had to be removed for calculation")
       }
@@ -535,31 +574,12 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     }
     return(module)
  }
-   if (length(edge.scores)==0){
-   warning("No edges with positive scores")
-   if (max(node.scores) <= 0){
-     
-     warning("No nodes with positive scores")
-     break
-   }
-   
-   if (max(node.scores) > 0){
-     
-     nodes.module.name<-names(node.scores[which(node.scores==max(node.scores))])
-     
-     module <- .subNetwork0(nodes.module.name, network)
-     if (net.flag) {
-       module <- igraph.to.graphNEL(module)
-     }
-     return(module)
-   }
-    
- }
   
   
   #find positive scoring nodes with the positive edges connecting them
   pos.subgraph <- subnetwork.e(network,pos.nodes,pos.edges,remove.vertex=F )
   
+
   #identify components of that subgraph via some algorithm (not clear to me how it works)
   #I believe the idea is that there may be components of the positive subgraph that are not
   #actually connected. These non connected clusters are the 'graph components'
@@ -658,7 +678,10 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   #This will leave only one member of each of the positively scoring clusters, with the cumulative score
   #for that cluster assigned to it, and the rest of the negatively scoring nodes
   #Beacuse all members of a cluster were assigned the same id and score, these all appeared as self loops
-  interactome2 <- simplify(interactome2, remove.multiple = TRUE, edge.attr.comb = "sum")
+  E(interactome2)$name
+  
+  
+  interactome2 <- igraph::simplify(interactome2, remove.multiple = TRUE, edge.attr.comb = "sum")
   edge.name.inter.pos<-paste(get.edgelist(interactome2,T)[,1],get.edgelist(interactome2,T)[,2],sep="_")[E(interactome2)$score>0]
   E(interactome2)$name<-paste(get.edgelist(interactome2,T)[,1],get.edgelist(interactome2,T)[,2],sep="_")
   
@@ -1015,32 +1038,25 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   #score is positive, then grab the highest scoring cluster and assign it to object 'module'
   #need to check the combined neighboring negative nodes and the connecting edge scores
   if (length(neg.node.ids.2) == 0) {
-     
-   # cluster.max.nodes <- unlist(lapply(conn.comp.graph, vertex_attr, 
-    #                                   "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[which.max(cluster.score)], 
-    #                                                                             "cluster")), nrow = 2)[2, ])])
-   # V(mst)$score <- v.score[V(mst)$name]
-   # max.cluster <- names(cluster.score)[which.max(cluster.score)]
-    #neighbor.score <- neighbor.combined.scores(mst, max.cluster)
-    
-    
-    
-    V(mst)$score <- v.score[V(mst)$name]
-    
-    cluster.max.score.mst<- max(V(mst)$score[grepl("cluster",V(mst)$name)])
-    
-    cluster.name.max.mst<-V(mst)$name[v.score[V(mst)$name]==cluster.max.score.mst]
-    
-    cluster.max.nodes <- unlist(lapply(conn.comp.graph, vertex_attr, 
-                                       "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[cluster.score==cluster.max.score.mst], "cluster")), nrow = 2)[2, ])])
-    
-    #  max.cluster <- names(cluster.score)[which.max(cluster.score)]
-    neighbor.score <- neighbor.combined.scores(mst, cluster.name.max.mst)
-    
-
-    
+    cluster.max.nodes<-unlist(lapply(conn.comp.graph, vertex_attr,
+                                     
+                                     "name")[as.numeric(matrix(unlist(strsplit(names(cluster.score)[which.max(cluster.score)],
+                                                                               "cluster")), nrow = 2)[2, ])])
+    #the term in the square brackets is a very complicated way of getting the number of the cluster with
+    #the highest score
+    V(mst)$score<-v.score[V(mst)$name]
+    max.cluster<-names(cluster.score)[which.max(cluster.score)]
     #under some special situation, clusters with minimum spanning tree might not the same as the cluster with highest cluster score
-    if (names(mst.cluster.id)!=max.cluster){
+    
+    if (length(max.cluster)>=1){
+       flag_eq_mst_maxClu=F
+      for (maxcid in 1: length(max.cluster)){
+        if (names(mst.cluster.id)==max.cluster){
+          flag_eq_mst_maxClu=T }
+      }
+    }
+    
+    if (!flag_eq_mst_maxClu){
       neighbor.score<-neighbor.combined.scores(network,cluster.max.nodes)
     }else{
       neighbor.score<-neighbor.combined.scores(mst,max.cluster)
@@ -1067,7 +1083,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     
     if (net.flag) {
       nE <- ecount(module)
-      module <- simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
+      module <- igraph::simplify(module, remove.multiple = TRUE, edge.attr.comb="sum")
       if (nE != ecount(module)) {
         warning("Multiple edges between two nodes had to be removed for calculation")
       }
@@ -1166,9 +1182,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   
   if(length(vcount(subg))<=2){
     
-    
-    
-     V(mst)$score <- v.score[V(mst)$name]
+    V(mst)$score <- v.score[V(mst)$name]
     
     cluster.max.score.mst<- max(V(mst)$score[grepl("cluster",V(mst)$name)])
     
@@ -1192,6 +1206,8 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     
     
     neighbor.score<-neighbor.combined.scores(mst,cluster.name.max.mst)
+    
+    
     
     if(max(neighbor.score)<=0){
       module <- subnetwork.e(network,vid=cluster.max.nodes,eid=names(edge.scores),remove.vertex=F )}
@@ -1223,7 +1239,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
   #plotModule(module)
   if (net.flag) {
     nE <- ecount(module)
-    module <- simplify(module, remove.multiple = TRUE,edge.attr.comb="sum")
+    module <- igraph::simplify(module, remove.multiple = TRUE,edge.attr.comb="sum")
     if (nE != ecount(module)) {
       warning("Multiple edges between two nodes had to be removed for calculation")
     }
