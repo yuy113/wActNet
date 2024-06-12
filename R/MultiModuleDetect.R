@@ -141,7 +141,18 @@ subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
   }
   
 
+    if( any(is.na(eid)) ){
+    eid<-as.vector(na.omit(eid))
+    
+  }
   
+  
+  if(!is.null(E(graph)$score)){
+    edge.scores<-E(graph)$score
+    names(edge.scores)<-E(graph)$name
+    edge.score.sub<-edge.scores[eid]
+    
+  }
   
   
   if(is.null(eid)  || all(is.na(eid))  ){
@@ -179,18 +190,7 @@ subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
     break
   }
   
-  if( any(is.na(eid)) ){
-    eid<-as.vector(na.omit(eid))
-    
-  }
-  
-  
-  if(!is.null(E(graph)$score)){
-    edge.scores<-E(graph)$score
-    names(edge.scores)<-E(graph)$name
-    edge.score.sub<-edge.scores[eid]
-    
-  }
+
   
   names.edge.score.sub<-names(edge.score.sub)
   
