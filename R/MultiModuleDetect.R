@@ -114,7 +114,7 @@ subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
   }
   
   
-  if(!(is.null(V(graph)$score)  || all(is.na(E(graph)$name)))        ){
+  if(!(is.null(V(graph)$score)  || all(is.na(V(graph)$name)))        ){
     node.scores<-V(graph)$score
     
     
