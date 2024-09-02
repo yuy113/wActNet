@@ -182,7 +182,7 @@ relations <- data.frame(from=from.name,
                             score=edge.score)
   }
 
-  g <- graph_from_data_frame(relations, directed=F, vertices=node)
+  g <- igraph::graph_from_data_frame(relations, directed=F, vertices=node)
 
   g
 
