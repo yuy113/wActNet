@@ -65,7 +65,7 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
     corr.perm<-cor(var.perm[,1:ncol(dat1)],var.perm[,(1+ncol(dat1)):ncol(dat)], use="complete.obs")
 
 
-    as.vector(corr.perm)
+    as.vector(unlist(corr.perm))
 
   }
   ##########################################################################
@@ -155,7 +155,7 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
     from<-rep(colnames(dat1),ncol(dat2))
     to<-rep(colnames(dat2),each=ncol(dat1))
     names(p.val.perm)<-paste(from,to,sep="_")
-    p.val.perm
+    unlist(p.val.perm)
   }
 
   ######################################################################################################################
@@ -209,7 +209,7 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
       from<-c(from,rep(colnames(dat)[i],length((i+1):dim(dat)[2])))
       to<-c(to,colnames(dat)[-c(1:i)])}
     names(p.val.perm)<-paste(from,to,sep="_")
-    return(p.val.perm)
+    return(unlist(p.val.perm))
   }
   
   
@@ -255,7 +255,7 @@ pval.perm.corr.cross.p<-function(dat1,dat2,nsim,MatchId=NULL){
   from<-rep(colnames(dat1),ncol(dat2))
   to<-rep(colnames(dat2),each=ncol(dat1))
   names(p.val.perm)<-paste(from,to,sep="_")
-  p.val.perm
+  unlist(p.val.perm)
 }
 
 pval.perm.corr.submat.p<-function(dat,nsim,MatchId=NULL){
@@ -300,7 +300,7 @@ pval.perm.corr.submat.p<-function(dat,nsim,MatchId=NULL){
     from<-c(from,rep(colnames(dat)[i],length((i+1):dim(dat)[2])))
     to<-c(to,colnames(dat)[-c(1:i)])}
   names(p.val.perm)<-paste(from,to,sep="_")
-  return(p.val.perm)
+  return(unlist(p.val.perm))
 }
 
 
@@ -350,7 +350,7 @@ pval.perm.corr.sub<-foreach( i = 1:n.submat,.combine='c')%dopar%
 
     }
   }
-  c(pval.perm.corr.sub,pval.perm.corr.cross2)
+  c(unlist(pval.perm.corr.sub),unlist(pval.perm.corr.cross2))
 }
 
 
