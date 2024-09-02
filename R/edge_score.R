@@ -221,7 +221,7 @@ BioNet::scoreNodes(da.igraph,fb=fb.bm.node,fdr=fdr1)
 }
 node.scores<-node.score(da.igraph,pval.node,fdr1)
 
-network.dat<-induced.graph.data.frame(dat,node.score=node.scores,edge.score=edge.scores,node.weight=NULL,edge.weight=NULL)
+network.dat<-igraph::induced.graph.data.frame(dat,node.score=node.scores,edge.score=edge.scores,node.weight=NULL,edge.weight=NULL)
 z <- list(NodeScore=node.scores, EdgeScore=edge.scores,Network=network.dat)
 class(z) <- "NetworkScore"
 
