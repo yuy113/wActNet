@@ -95,7 +95,7 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     }
     
     
-    if(!(is.null(V(graph)$score)  || all(is.na(E(graph)$name)))        ){
+    if(!(is.null(V(graph)$score)  || all(is.na(V(graph)$name)))        ){
       node.scores<-V(graph)$score
       
       
@@ -229,8 +229,12 @@ runFastHeinz.e<-function(network, node.scores,edge.scores,weightratio.edge.node=
     ################################################################################
     ##in case remove.vertex=T, remove some nodes from input parameter-vid#########
     ###############################################################################
-    node.score.sub<-node.score.sub[vid]
-    if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
+  if (!(is.null(V(graph)$score) || all(is.na(V(graph)$name)))) {
+  
+  node.score.sub <- node.score.sub[vid]
+  }
+    
+  if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
       node.weight.sub<-node.weight[vid]
     }
     names.edge.sub.nodes<-paste( from.name.edge.sub.nodes,to.name.edge.sub.nodes,sep="_")
