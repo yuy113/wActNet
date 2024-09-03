@@ -247,7 +247,14 @@ subnetwork.e<-function(graph,vid,eid,remove.vertex=F){
   ################################################################################
   ##in case remove.vertex=T, remove some nodes from input parameter-vid#########
   ###############################################################################
-  node.score.sub<-node.score.sub[vid]
+
+  if (!(is.null(V(graph)$score) || all(is.na(V(graph)$name)))) {
+  
+  node.score.sub <- node.score.sub[vid]
+  }
+
+
+  
   if( ! (is.null(V(graph)$weight) || all(is.na(V(graph)$weight)))  ){
     node.weight.sub<-node.weight[vid]
   }
