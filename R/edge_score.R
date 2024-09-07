@@ -21,6 +21,23 @@
 #' on all possible edges,typically 0.01,0.001
 #' @param dat  Dataset containing the observations for p covariates (nodes)
 #'  The column names of the dat must be specified.
+#' @param optim.method  the parameter used for optimization for mixed beta distribution of P values of the edges
+#'  inherited input parameter-"method" of optimization methods used in R function optim()
+#' c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN","Brent")
+#' default method used in edge score derivation is Nelder-Mead optimization method
+#'  @param optim.lower the parameter used for optimization for mixed beta distribution of P values of the edges
+#'  inherited input parameter-"lower" of optimization methods used in R function optim()
+#' lowest values for grid search in optimization
+#' default value is -Inf
+#'  @param optim.upper the parameter used for optimization for mixed beta distribution of P values of the edges
+#'  inherited input parameter-"upper" of optimization methods used in R function optim()
+#' largest values for grid search in optimization
+#' default value is Inf
+#'  @param optim.control the parameter used for optimization for mixed beta distribution of P values of the edges
+#'  inherited input parameter-"control" of optimization methods used in R function optim()
+#'  @param optim.hessian the parameter used for optimization for mixed beta distribution of P values of the edges
+#'  inherited input parameter-"hessian" of optimization methods used in R function optim()
+#' default value is FALSE
 #' @return A list of five elements as decribed below:
 #'
 #'This function returns an object with class \emph{NetworkScore}. The items in the object are:
@@ -50,7 +67,8 @@
 #' @export
 #'
 #'
-uniform.beta.node.edge.score<-function(pval.node,pval.edge,FDR.node,FDR.edge,dat)
+uniform.beta.node.edge.score<-function(pval.node,pval.edge,FDR.node,FDR.edge,dat,optim.method="Nelder-Mead",optim.lower = -Inf, optim.upper = Inf,
+                                       optim.control = list(), optim.hessian = FALSE)
 {
 
   fdr1<-FDR.node
