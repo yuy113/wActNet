@@ -85,7 +85,7 @@ uniform.beta.edge.score<-function(pval,fdr){
   logit.inv<-function(x){
     return(exp(x)/(1+exp(x)))
   }
-  init<-runif(2,0.1,0.9)
+  init<-runif(2,0.00001,0.99999)
   param.opt<-optim(par=init,log.like.edge)$par
   a.est<-logit.inv(param.opt[2])
   lambda.est<-logit.inv(param.opt[1])
