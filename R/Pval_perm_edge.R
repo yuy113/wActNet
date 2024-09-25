@@ -316,8 +316,14 @@ pval.perm.corr<-function(dat,nsim,MatchId=NULL,do.parallel=FALSE,no_cores=NULL){
     if(!do.parallel){
       
       
-      pval.perm.corr.sub<-unlist(sapply(1:n.submat,function(i){pval.perm.corr.submat(dat[,c(((i-1)*20+1):min(p,20*i))],nsim,MatchId)},simplify = TRUE, USE.NAMES = TRUE))
-     # names(pval.perm.corr.sub)
+      pval.perm.corr.sub<-c()
+      for (i in 1:n.submat){
+   
+        pval.perm.corr.sub<-c(pval.perm.corr.sub,  pval.perm.corr.submat(dat[, c(((i - 1) * 20 + 
+                                         1):min(p, 20 * i))], nsim, MatchId))
+        
+      }
+           # names(pval.perm.corr.sub)
       pval.perm.corr.cross2<-c()
       for (i in 1:(n.submat-1)){
         
